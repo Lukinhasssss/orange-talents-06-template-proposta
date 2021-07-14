@@ -44,10 +44,42 @@ public class ProposalControllerTest {
     }
 
     @Test
+    void shouldReturnStatus400WhenEmailIsWithInvalidFormat() throws Exception { // TODO -> Adicionar regex para validar o email porque só o @Email não é suficiente
+        mockMvc.perform(post("/proposals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(new ProposalRequest("Luffy", "luffy.gmail", "78004074030", "Rua dos Bobos, 0", new BigDecimal("2500")))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnStatus400WhenEmailIsEmpty() throws Exception { // TODO -> Adicionar regex para validar o email porque só o @Email não é suficiente
+        mockMvc.perform(post("/proposals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(new ProposalRequest("Luffy", "", "78004074030", "Rua dos Bobos, 0", new BigDecimal("2500")))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnStatus400WhenEmailHasOnlyWhiteSpace() throws Exception { // TODO -> Adicionar regex para validar o email porque só o @Email não é suficiente
+        mockMvc.perform(post("/proposals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(new ProposalRequest("Luffy", " ", "78004074030", "Rua dos Bobos, 0", new BigDecimal("2500")))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldReturnStatus400WhenDocumentAlreadyExists() throws Exception {
         mockMvc.perform(post("/proposals")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(new ProposalRequest("Luffy", "luffy@gmail.com", "85857488001", "Rua dos Bobos, 0", new BigDecimal("2500")))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnStatus400WhenDocumentIsInvalid() throws Exception {
+        mockMvc.perform(post("/proposals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(new ProposalRequest("Luffy", "luffy@gmail.com", "123456789", "Rua dos Bobos, 0", new BigDecimal("2500")))))
                 .andExpect(status().isBadRequest());
     }
 
