@@ -4,7 +4,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.nio.file.Path;
 
 @Entity
 @Table(name = "tb_proposal")
@@ -20,7 +19,7 @@ public class Proposal {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String document;
 
     @Column(nullable = false)

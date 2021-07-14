@@ -1,7 +1,6 @@
 package com.lukinhasssss.proposta.dto.request;
 
 import com.lukinhasssss.proposta.config.validation.Document;
-import com.lukinhasssss.proposta.config.validation.UniqueValue;
 import com.lukinhasssss.proposta.entities.Proposal;
 
 import javax.validation.constraints.*;
@@ -14,12 +13,10 @@ public class ProposalRequest {
 
     @NotBlank @NotEmpty
     @Email
-    @UniqueValue(domainClass = Proposal.class, fieldName = "email", message = "Já existe outra proposta associada a este email")
     private String email;
 
     @NotBlank @NotEmpty
     @Document
-    @UniqueValue(domainClass = Proposal.class, fieldName = "document", message = "Já existe outra proposta associada a este CPF/CNPJ")
     private String document;
 
     @NotBlank @NotEmpty
