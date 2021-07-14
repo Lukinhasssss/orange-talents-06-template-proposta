@@ -1,0 +1,2 @@
+insert into tb_proposal(id, name, email, document, address, salary) values('f168222f-ae37-4fa3-b32a-fa13bffba5cc', 'Ana Grey', 'ana.grey@gmail.com', '98091362005', 'Rua dos Bobos, 0', 2500.00);
+insert into tb_proposal(id, name, email, document, address, salary) values('b168222f-ae37-8zz9-z99y-fa13bffba5ll', 'Luffy', 'luffy@gmail.com', '85857488001', 'Rua dos Bobos, 0', 2500.00);
