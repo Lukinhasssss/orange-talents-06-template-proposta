@@ -1,10 +1,20 @@
 package com.lukinhasssss.proposta.dto.response;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 public class SolicitacaoResponse {
 
+    @NotBlank @NotEmpty
     private String nome;
+
+    @NotBlank @NotEmpty
     private String documento;
+
+    @NotBlank @NotEmpty
     private String resultadoSolicitacao;
+
+    @NotBlank @NotEmpty
     private String idProposta;
 
     public SolicitacaoResponse() {}

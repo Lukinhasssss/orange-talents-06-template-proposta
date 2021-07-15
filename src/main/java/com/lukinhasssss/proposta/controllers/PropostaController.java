@@ -1,5 +1,6 @@
 package com.lukinhasssss.proposta.controllers;
 
+import com.lukinhasssss.proposta.config.validation.StandardErrorMessage;
 import com.lukinhasssss.proposta.dto.request.PropostaRequest;
 import com.lukinhasssss.proposta.dto.response.SolicitacaoResponse;
 import com.lukinhasssss.proposta.entities.Proposta;
@@ -30,19 +31,18 @@ public class PropostaController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> novaProposta(@RequestBody @Valid PropostaRequest request) {
+    public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaRequest request) {
         Proposta proposta = request.converterParaEntidade();
-        propostaRepository.save(proposta);
-        proposta.setStatus(StatusProposta.NAO_ELEGIVEL);
-
 
         try {
             SolicitacaoResponse response = solicitacaoIntegration.novaSolicitacao(request).getBody();
+            assert response != null;
             proposta.setStatus(StatusProposta.convert(response.getResultadoSolicitacao()));
             propostaRepository.save(proposta);
         }
         catch (FeignException e) {
-            System.out.println(e);
+            propostaRepository.save(proposta);
+            return ResponseEntity.unprocessableEntity().body(new StandardErrorMessage("documento", "Não foi possível aceitar a proposta para esse documento."));
         }
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(proposta.getId()).toUri();

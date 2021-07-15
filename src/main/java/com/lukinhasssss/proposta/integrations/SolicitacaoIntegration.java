@@ -7,10 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
+
 @FeignClient(url = "http://localhost:9999/api/solicitacao", name = "solicitacaoIntegracao")
 public interface SolicitacaoIntegration {
 
     @PostMapping
-    ResponseEntity<SolicitacaoResponse> novaSolicitacao(@RequestBody PropostaRequest request);
+    ResponseEntity<SolicitacaoResponse> novaSolicitacao(@RequestBody @Valid PropostaRequest request);
 
 }

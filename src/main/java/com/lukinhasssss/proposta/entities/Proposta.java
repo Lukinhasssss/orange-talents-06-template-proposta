@@ -29,7 +29,7 @@ public class Proposta {
     @Column(nullable = false)
     private BigDecimal salario;
 
-    private StatusProposta status;
+    private StatusProposta status = StatusProposta.NAO_ELEGIVEL;
 
     @Deprecated
     public Proposta() {}
