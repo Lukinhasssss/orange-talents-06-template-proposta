@@ -1,6 +1,7 @@
 package com.lukinhasssss.proposta.integrations;
 
 import com.lukinhasssss.proposta.dto.request.PropostaRequest;
+import com.lukinhasssss.proposta.dto.request.SolicitacaoRequest;
 import com.lukinhasssss.proposta.dto.response.SolicitacaoResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 
-@FeignClient(url = "http://localhost:9999/api/solicitacao", name = "solicitacaoIntegracao")
+@FeignClient(url = "${solicitacao.url}", name = "solicitacaoIntegracao")
 public interface SolicitacaoIntegration {
 
     @PostMapping
-    ResponseEntity<SolicitacaoResponse> novaSolicitacao(@RequestBody @Valid PropostaRequest request);
+    SolicitacaoResponse novaSolicitacao(@RequestBody @Valid SolicitacaoRequest request);
 
 }

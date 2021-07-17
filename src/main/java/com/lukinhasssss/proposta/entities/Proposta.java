@@ -29,7 +29,12 @@ public class Proposta {
     @Column(nullable = false)
     private BigDecimal salario;
 
+    @Enumerated(value = EnumType.STRING)
     private StatusProposta status = StatusProposta.NAO_ELEGIVEL;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Cartao cartao;
 
     @Deprecated
     public Proposta() {}
@@ -60,6 +65,10 @@ public class Proposta {
 
     public void setStatus(StatusProposta status) {
         this.status = status;
+    }
+
+    public void setCartao(Cartao cartao) {
+        this.cartao = cartao;
     }
 
 }
