@@ -35,7 +35,7 @@ public class PropostaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaRequest request,) {
+    public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaRequest request) {
         Proposta proposta = request.converterParaEntidade();
         propostaRepository.save(proposta);
 
