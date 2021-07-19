@@ -26,7 +26,7 @@ public class PropostaCartaoSchedule {
         this.contasIntegration = contasIntegration;
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 60000)
     public void atribuirCartao() {
 
         List<CartaoResponse> cartoes = contasIntegration.getCartoes().getBody();
