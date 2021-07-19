@@ -1,5 +1,29 @@
-version: '3'
+version: '3.9'
 services:
+
+  proposta:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lukinhasssss/proposta
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - meu_db
+    environment:
+      APP_PROFILE: prod
+
+  meu_db:
+    image: mysql:8.0
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    restart: always
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 33018446
+      MYSQL_DATABASE: proposta
 
   zookeeper:
     image: "confluentinc/cp-zookeeper:5.2.1"
@@ -111,7 +135,6 @@ services:
     image: prom/prometheus
     volumes:
       - prometheus-volume:/etc/prometheus/
-    network_mode: bridge
     ports:
       - "9090:9090"
 
@@ -138,3 +161,4 @@ volumes:
   grafana-volume:
   prometheus-volume:
   postgres-volume:
+  mysql-volume:

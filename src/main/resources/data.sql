@@ -1,1 +1,0 @@
-insert into tb_proposta(id, nome, email, documento, endereco, salario) values('a1496b17-455a-4eeb-8610-f1060af21636', 'Izuko Midoriya', 'midoriya@gmail.com', '52667623061', 'Rua dos Bobos, 0', 2500);
