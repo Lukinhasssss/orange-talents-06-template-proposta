@@ -8,7 +8,9 @@ import com.lukinhasssss.proposta.entities.Proposta;
 import com.lukinhasssss.proposta.entities.enums.StatusProposta;
 import com.lukinhasssss.proposta.integrations.SolicitacaoIntegration;
 import com.lukinhasssss.proposta.repositories.PropostaRepository;
+import com.lukinhasssss.proposta.utils.MensagemDeErroNotFound;
 import feign.FeignException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -54,7 +56,7 @@ public class PropostaController {
         Optional<Proposta> proposta = propostaRepository.findById(idProposta);
 
         if (proposta.isEmpty())
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar a proposta de id: " + idProposta));
 
         return ResponseEntity.ok().body(new PropostaResponse(proposta.get()));
 
