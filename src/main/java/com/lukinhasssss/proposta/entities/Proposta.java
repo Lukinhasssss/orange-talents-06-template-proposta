@@ -32,9 +32,7 @@ public class Proposta {
     @Enumerated(value = EnumType.STRING)
     private StatusProposta status = StatusProposta.NAO_ELEGIVEL;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private Cartao cartao;
+    private String numeroCartao;
 
     @Deprecated
     public Proposta() {}
@@ -67,8 +65,8 @@ public class Proposta {
         this.status = status;
     }
 
-    public void setCartao(Cartao cartao) {
-        this.cartao = cartao;
+    public void setNumeroCartao(String numeroCartao) {
+        this.numeroCartao = numeroCartao;
     }
 
 }

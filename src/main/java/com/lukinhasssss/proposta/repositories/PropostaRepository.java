@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface PropostaRepository extends JpaRepository<Proposta, String> {
 
-    List<Proposta> findByStatus(StatusProposta statusProposta);
-
-    List<Proposta> findByStatusAndCartaoIsNull(StatusProposta statusProposta);
+    List<Proposta> findByStatusAndNumeroCartaoIsNull(StatusProposta elegivel);
 
 }
