@@ -1,5 +1,6 @@
 package com.lukinhasssss.proposta.controllers;
 
+import com.lukinhasssss.proposta.config.validation.StandardErrorMessage;
 import com.lukinhasssss.proposta.dto.request.PropostaRequest;
 import com.lukinhasssss.proposta.dto.request.SolicitacaoRequest;
 import com.lukinhasssss.proposta.dto.response.PropostaResponse;
@@ -43,8 +44,10 @@ public class PropostaController {
             propostaRepository.save(proposta);
         }
         catch (FeignException e) {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(proposta.getId()).toUri();
-            return ResponseEntity.created(uri).build();
+            if (e.status() == 422)
+                return ResponseEntity.unprocessableEntity().body(new StandardErrorMessage("documento", "Não foi possível criar uma proposta para este CPF/CNPJ!"));
+
+            return ResponseEntity.badRequest().build();
         }
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(proposta.getId()).toUri();

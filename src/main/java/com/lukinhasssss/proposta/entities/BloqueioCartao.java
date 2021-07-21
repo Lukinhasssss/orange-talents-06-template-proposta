@@ -9,25 +9,28 @@ import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "tb_biometria")
-public class Biometria {
+@Table(name = "tb_bloqueio_cartao")
+public class BloqueioCartao {
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
-    private String fingerprint;
+    private String ipCliente;
+
+    private String userAgent;
 
     private String idCartao;
 
-    private Instant adicionadaEm = Instant.now();
+    private Instant bloqueadoEm = Instant.now();
 
     @Deprecated
-    public Biometria() {}
+    private BloqueioCartao() {}
 
-    public Biometria(String fingerprint, String idCartao) {
-        this.fingerprint = fingerprint;
+    public BloqueioCartao(String ipCliente, String userAgent, String idCartao) {
+        this.ipCliente = ipCliente;
+        this.userAgent = userAgent;
         this.idCartao = idCartao;
     }
 
