@@ -1,10 +1,13 @@
 package com.lukinhasssss.proposta.controllers;
 
+import com.lukinhasssss.proposta.dto.request.AvisoViagemRequest;
 import com.lukinhasssss.proposta.dto.request.BiometriaRequest;
 import com.lukinhasssss.proposta.dto.response.CartaoResponse;
+import com.lukinhasssss.proposta.entities.AvisoViagem;
 import com.lukinhasssss.proposta.entities.Biometria;
 import com.lukinhasssss.proposta.entities.BloqueioCartao;
 import com.lukinhasssss.proposta.integrations.CartaoIntegration;
+import com.lukinhasssss.proposta.repositories.AvisoViagemRepository;
 import com.lukinhasssss.proposta.repositories.BiometriaRepository;
 import com.lukinhasssss.proposta.repositories.BloqueioCartaoRepository;
 import com.lukinhasssss.proposta.utils.MensagemDeErroNotFound;
@@ -20,7 +23,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/cartoes")
@@ -29,11 +31,13 @@ public class CartaoController {
     private BiometriaRepository biometriaRepository;
     private CartaoIntegration cartaoIntegration;
     private BloqueioCartaoRepository bloqueioCartaoRepository;
+    private AvisoViagemRepository avisoViagemRepository;
 
-    public CartaoController(BiometriaRepository biometriaRepository, CartaoIntegration cartaoIntegration, BloqueioCartaoRepository bloqueioCartaoRepository) {
+    public CartaoController(BiometriaRepository biometriaRepository, CartaoIntegration cartaoIntegration, BloqueioCartaoRepository bloqueioCartaoRepository, AvisoViagemRepository avisoViagemRepository) {
         this.biometriaRepository = biometriaRepository;
         this.cartaoIntegration = cartaoIntegration;
         this.bloqueioCartaoRepository = bloqueioCartaoRepository;
+        this.avisoViagemRepository = avisoViagemRepository;
     }
 
     @Value("${sistema.nome}")
@@ -62,7 +66,13 @@ public class CartaoController {
         try {
             CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe
             cartaoIntegration.bloquearCartaoNoSistemaLegado(id, Map.of("sistemaResponsavel", this.sistemaResponsavel));
-        } catch (FeignException e) {
+
+            BloqueioCartao bloqueioCartao = new BloqueioCartao(request.getRemoteAddr(), userAgent, id);
+            bloqueioCartaoRepository.save(bloqueioCartao);
+
+            return ResponseEntity.ok().build();
+        }
+        catch (FeignException e) {
             if (e.status() == 404)
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar um cartão com id: " + id));
 
@@ -71,11 +81,30 @@ public class CartaoController {
 
             return ResponseEntity.badRequest().build();
         }
+    }
 
-        BloqueioCartao bloqueioCartao = new BloqueioCartao(request.getRemoteAddr(), userAgent, id);
-        bloqueioCartaoRepository.save(bloqueioCartao);
+    @PostMapping("/{id}/avisos")
+    public ResponseEntity<?> avisoViagem(@PathVariable String id, @RequestHeader(value = "User-Agent") String userAgent, HttpServletRequest httpRequest, @RequestBody AvisoViagemRequest request) {
+        try {
+            CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe
 
-        return ResponseEntity.ok().build();
+            Map<String, Object> body = new HashMap<>();
+            body.put("destino", request.getDestino());
+            body.put("validoAte", request.getTerminoViagem());
+
+            cartaoIntegration.avisoViagem(id, body);
+
+            AvisoViagem avisoViagem = request.converterParaEntidade(userAgent, httpRequest, id);
+            avisoViagemRepository.save(avisoViagem);
+
+            return ResponseEntity.ok().build();
+        }
+        catch (FeignException e) {
+            if (e.status() == 404)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar um cartão com id: " + id));
+
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

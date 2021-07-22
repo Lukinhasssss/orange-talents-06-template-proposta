@@ -15,4 +15,7 @@ public interface CartaoIntegration {
     @PostMapping("/{id}/bloqueios")
     void bloquearCartaoNoSistemaLegado(@PathVariable String id, Object sistemaResponsavel);
 
+    @PostMapping("/{id}/avisos")
+    void avisoViagem(@PathVariable String id, Object request);
+
 }
