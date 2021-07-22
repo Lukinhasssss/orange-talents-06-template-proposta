@@ -59,20 +59,15 @@ public class CartaoController {
 
     @PostMapping("/{id}/bloqueios")
     public ResponseEntity<?> bloquearCartao(@PathVariable String id, @RequestHeader(value = "User-Agent") String userAgent, HttpServletRequest request) {
-        Optional<BloqueioCartao> cartaoBloqueado = bloqueioCartaoRepository.findByIdCartao(id);
-
-        if (cartaoBloqueado.isPresent())
-            return ResponseEntity.unprocessableEntity().build();
-
         try {
             CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe
-
-            Map<String, Object> nomeSistema = new HashMap<>();
-            nomeSistema.put("sistemaResponsavel", this.sistemaResponsavel);
-            cartaoIntegration.bloquearCartaoNoSistemaLegado(id, nomeSistema);
+            cartaoIntegration.bloquearCartaoNoSistemaLegado(id, Map.of("sistemaResponsavel", this.sistemaResponsavel));
         } catch (FeignException e) {
             if (e.status() == 404)
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar um cartão com id: " + id));
+
+            if (e.status() == 422)
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MensagemDeErroNotFound("Cartão já está bloqueado!"));
 
             return ResponseEntity.badRequest().build();
         }
@@ -84,3 +79,7 @@ public class CartaoController {
     }
 
 }
+
+// Map<String, Object> nomeSistema = new HashMap<>();
+// nomeSistema.put("sistemaResponsavel", this.sistemaResponsavel);
+// cartaoIntegration.bloquearCartaoNoSistemaLegado(id, nomeSistema);
