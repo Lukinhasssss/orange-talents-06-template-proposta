@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -45,7 +46,7 @@ public class PropostaController {
         }
         catch (FeignException e) {
             if (e.status() == 422)
-                return ResponseEntity.unprocessableEntity().body(new StandardErrorMessage("documento", "Não foi possível criar uma proposta para este CPF/CNPJ!"));
+                return ResponseEntity.unprocessableEntity().body(Map.of("documento", "Não foi possível criar uma proposta para este CPF/CNPJ!"));
 
             return ResponseEntity.badRequest().build();
         }
@@ -59,7 +60,7 @@ public class PropostaController {
         Optional<Proposta> proposta = propostaRepository.findById(idProposta);
 
         if (proposta.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar a proposta de id: " + idProposta));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensagem", "Não foi possível encontrar a proposta de id: " + idProposta));
 
         return ResponseEntity.ok().body(new PropostaResponse(proposta.get()));
 

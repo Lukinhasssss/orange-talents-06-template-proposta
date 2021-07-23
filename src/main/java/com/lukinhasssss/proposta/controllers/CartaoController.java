@@ -55,7 +55,7 @@ public class CartaoController {
             CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe
         } catch (FeignException e) {
             if (e.status() == 404)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar um cartão com id: " + id));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensagem", "Não foi possível encontrar um cartão com id:" + id));
 
             return ResponseEntity.badRequest().build();
         }
@@ -80,7 +80,7 @@ public class CartaoController {
         }
         catch (FeignException e) {
             if (e.status() == 404)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar um cartão com id: " + id));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensagem", "Não foi possível encontrar um cartão com id:" + id));
 
             if (e.status() == 422)
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MensagemDeErroNotFound("Cartão já está bloqueado!"));
@@ -107,7 +107,7 @@ public class CartaoController {
         }
         catch (FeignException e) {
             if (e.status() == 404)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar um cartão com id: " + id));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensagem", "Não foi possível encontrar um cartão com id:" + id));
 
             return ResponseEntity.badRequest().build();
         }
@@ -131,7 +131,7 @@ public class CartaoController {
         }
         catch (FeignException e) {
             if (e.status() == 404)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar um cartão com id: " + id));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensagem", "Não foi possível encontrar um cartão com id:" + id));
 
             return ResponseEntity.badRequest().build();
         }
