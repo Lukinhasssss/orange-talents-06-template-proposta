@@ -2,6 +2,7 @@ package com.lukinhasssss.proposta.integrations;
 
 import com.lukinhasssss.proposta.dto.request.CarteiraRequest;
 import com.lukinhasssss.proposta.dto.response.CartaoResponse;
+import com.lukinhasssss.proposta.dto.response.CarteiraResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,6 @@ public interface CartaoIntegration {
     void avisoViagem(@PathVariable String id, Object request);
 
     @PostMapping("/{id}/carteiras")
-    void associarCarteira(@PathVariable String id, @RequestBody CarteiraRequest request);
+    CarteiraResponse associarCarteira(@PathVariable String id, @RequestBody CarteiraRequest request);
 
 }

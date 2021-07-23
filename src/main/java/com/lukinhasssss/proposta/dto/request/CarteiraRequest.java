@@ -1,6 +1,5 @@
 package com.lukinhasssss.proposta.dto.request;
 
-import com.lukinhasssss.proposta.entities.Carteira;
 import com.lukinhasssss.proposta.entities.enums.TipoCarteira;
 
 import javax.validation.constraints.Email;
@@ -28,9 +27,5 @@ public class CarteiraRequest {
 
     public TipoCarteira getCarteira() {
         return carteira;
-    }
-
-    public Carteira converterParaEntidade(String id) {
-        return new Carteira(email, carteira, id);
     }
 }
