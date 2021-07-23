@@ -80,6 +80,12 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>io.opentracing.contrib</groupId>-->
+<!--			<artifactId>opentracing-spring-jaeger-cloud-starter</artifactId>-->
+<!--			<version>3.2.2</version>-->
+<!--		</dependency>-->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>

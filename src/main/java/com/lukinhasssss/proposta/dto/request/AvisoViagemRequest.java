@@ -3,8 +3,10 @@ package com.lukinhasssss.proposta.dto.request;
 import com.lukinhasssss.proposta.entities.AvisoViagem;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class AvisoViagemRequest {
@@ -12,7 +14,7 @@ public class AvisoViagemRequest {
     @NotBlank @NotEmpty
     private String destino;
 
-    @NotBlank @NotEmpty
+    @NotNull @Future
     private LocalDate terminoViagem;
 
     public AvisoViagemRequest() {}

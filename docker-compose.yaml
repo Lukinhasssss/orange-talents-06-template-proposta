@@ -136,7 +136,7 @@ services:
     volumes:
       - ./src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-volume:/etc/prometheus/
-    network_mode: bridge
+#    network_mode: bridge
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
@@ -146,7 +146,7 @@ services:
     image: grafana/grafana
     volumes:
       - grafana-volume:/var/lib/grafana
-    network_mode: bridge
+#    network_mode: bridge
     ports:
       - "3000:3000"
     depends_on:

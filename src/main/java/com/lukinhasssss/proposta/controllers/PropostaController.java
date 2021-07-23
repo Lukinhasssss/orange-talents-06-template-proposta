@@ -1,6 +1,5 @@
 package com.lukinhasssss.proposta.controllers;
 
-import com.lukinhasssss.proposta.config.validation.StandardErrorMessage;
 import com.lukinhasssss.proposta.dto.request.PropostaRequest;
 import com.lukinhasssss.proposta.dto.request.SolicitacaoRequest;
 import com.lukinhasssss.proposta.dto.response.PropostaResponse;
@@ -9,8 +8,8 @@ import com.lukinhasssss.proposta.entities.Proposta;
 import com.lukinhasssss.proposta.entities.enums.StatusProposta;
 import com.lukinhasssss.proposta.integrations.SolicitacaoIntegration;
 import com.lukinhasssss.proposta.repositories.PropostaRepository;
-import com.lukinhasssss.proposta.utils.MensagemDeErroNotFound;
 import feign.FeignException;
+//import io.opentracing.Tracer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +26,11 @@ public class PropostaController {
 
     private PropostaRepository propostaRepository;
     private SolicitacaoIntegration solicitacaoIntegration;
+//    private Tracer tracer;
+
+//    public PropostaController(Tracer tracer) {
+//        this.tracer = tracer;
+//    }
 
     public PropostaController(PropostaRepository propostaRepository, SolicitacaoIntegration solicitacaoIntegration) {
         this.propostaRepository = propostaRepository;
@@ -35,6 +39,8 @@ public class PropostaController {
 
     @PostMapping
     public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaRequest request) {
+//        tracer.activeSpan();
+
         Proposta proposta = request.converterParaEntidade();
         propostaRepository.save(proposta);
 
@@ -57,6 +63,8 @@ public class PropostaController {
 
     @GetMapping("/{idProposta}")
     public ResponseEntity<?> acompanharProposta(@PathVariable String idProposta) {
+//        tracer.activeSpan();
+
         Optional<Proposta> proposta = propostaRepository.findById(idProposta);
 
         if (proposta.isEmpty())
