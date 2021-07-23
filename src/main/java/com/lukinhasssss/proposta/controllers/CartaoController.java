@@ -2,14 +2,17 @@ package com.lukinhasssss.proposta.controllers;
 
 import com.lukinhasssss.proposta.dto.request.AvisoViagemRequest;
 import com.lukinhasssss.proposta.dto.request.BiometriaRequest;
+import com.lukinhasssss.proposta.dto.request.CarteiraRequest;
 import com.lukinhasssss.proposta.dto.response.CartaoResponse;
 import com.lukinhasssss.proposta.entities.AvisoViagem;
 import com.lukinhasssss.proposta.entities.Biometria;
 import com.lukinhasssss.proposta.entities.BloqueioCartao;
+import com.lukinhasssss.proposta.entities.Carteira;
 import com.lukinhasssss.proposta.integrations.CartaoIntegration;
 import com.lukinhasssss.proposta.repositories.AvisoViagemRepository;
 import com.lukinhasssss.proposta.repositories.BiometriaRepository;
 import com.lukinhasssss.proposta.repositories.BloqueioCartaoRepository;
+import com.lukinhasssss.proposta.repositories.CarteiraRepository;
 import com.lukinhasssss.proposta.utils.MensagemDeErroNotFound;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +26,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cartoes")
@@ -32,12 +36,14 @@ public class CartaoController {
     private CartaoIntegration cartaoIntegration;
     private BloqueioCartaoRepository bloqueioCartaoRepository;
     private AvisoViagemRepository avisoViagemRepository;
+    private CarteiraRepository carteiraRepository;
 
-    public CartaoController(BiometriaRepository biometriaRepository, CartaoIntegration cartaoIntegration, BloqueioCartaoRepository bloqueioCartaoRepository, AvisoViagemRepository avisoViagemRepository) {
+    public CartaoController(BiometriaRepository biometriaRepository, CartaoIntegration cartaoIntegration, BloqueioCartaoRepository bloqueioCartaoRepository, AvisoViagemRepository avisoViagemRepository, CarteiraRepository carteiraRepository) {
         this.biometriaRepository = biometriaRepository;
         this.cartaoIntegration = cartaoIntegration;
         this.bloqueioCartaoRepository = bloqueioCartaoRepository;
         this.avisoViagemRepository = avisoViagemRepository;
+        this.carteiraRepository = carteiraRepository;
     }
 
     @Value("${sistema.nome}")
@@ -107,8 +113,28 @@ public class CartaoController {
         }
     }
 
-}
+    @PostMapping("/{id}/carteiras")
+    public ResponseEntity<?> associarCarteira(@PathVariable String id, @RequestBody CarteiraRequest request) {
+        Optional<Carteira> carteiraRequest = carteiraRepository.findByIdCartaoAndTipoCarteira(id, request.getCarteira());
 
-// Map<String, Object> nomeSistema = new HashMap<>();
-// nomeSistema.put("sistemaResponsavel", this.sistemaResponsavel);
-// cartaoIntegration.bloquearCartaoNoSistemaLegado(id, nomeSistema);
+        if (carteiraRequest.isPresent())
+            return ResponseEntity.unprocessableEntity().body(Map.of("mensagem", "Este cartão já está associado a carteira: " + request.getCarteira()));
+
+        try {
+            CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe
+            cartaoIntegration.associarCarteira(id, request);
+            Carteira carteira = request.converterParaEntidade(id);
+            carteiraRepository.save(carteira);
+
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(carteira.getId()).toUri();
+            return ResponseEntity.created(uri).build();
+        }
+        catch (FeignException e) {
+            if (e.status() == 404)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemDeErroNotFound("Não foi possível encontrar um cartão com id: " + id));
+
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+}
