@@ -3,6 +3,7 @@ package com.lukinhasssss.proposta.dto.request;
 import com.lukinhasssss.proposta.config.validation.Document;
 import com.lukinhasssss.proposta.config.validation.UniqueValue;
 import com.lukinhasssss.proposta.entities.Proposta;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -55,8 +56,8 @@ public class PropostaRequest {
         return salario;
     }
 
-    public Proposta converterParaEntidade() {
-        return new Proposta(nome, email, documento, endereco, salario);
+    public Proposta converterParaEntidade(TextEncryptor encriptor) {
+        return new Proposta(nome, email, encriptor.encrypt(documento), endereco, salario);
     }
 
 }

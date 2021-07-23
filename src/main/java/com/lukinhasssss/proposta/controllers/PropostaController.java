@@ -12,6 +12,9 @@ import feign.FeignException;
 //import io.opentracing.Tracer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -40,8 +43,10 @@ public class PropostaController {
     @PostMapping
     public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaRequest request) {
 //        tracer.activeSpan();
+        String salt = KeyGenerators.string().generateKey();
+        TextEncryptor encriptor = Encryptors.text("password", salt);
 
-        Proposta proposta = request.converterParaEntidade();
+        Proposta proposta = request.converterParaEntidade(encriptor);
         propostaRepository.save(proposta);
 
         try {
