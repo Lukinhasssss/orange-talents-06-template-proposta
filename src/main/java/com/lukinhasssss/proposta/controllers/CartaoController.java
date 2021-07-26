@@ -14,7 +14,7 @@ import com.lukinhasssss.proposta.repositories.BiometriaRepository;
 import com.lukinhasssss.proposta.repositories.BloqueioCartaoRepository;
 import com.lukinhasssss.proposta.utils.MensagemDeErroNotFound;
 import feign.FeignException;
-//import io.opentracing.Tracer;
+import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,17 +35,14 @@ public class CartaoController {
     private CartaoIntegration cartaoIntegration;
     private BloqueioCartaoRepository bloqueioCartaoRepository;
     private AvisoViagemRepository avisoViagemRepository;
-//    private Tracer tracer;
+    private Tracer tracer;
 
-//    public CartaoController(Tracer tracer) {
-//        this.tracer = tracer;
-//    }
-
-    public CartaoController(BiometriaRepository biometriaRepository, CartaoIntegration cartaoIntegration, BloqueioCartaoRepository bloqueioCartaoRepository, AvisoViagemRepository avisoViagemRepository) {
+    public CartaoController(BiometriaRepository biometriaRepository, CartaoIntegration cartaoIntegration, BloqueioCartaoRepository bloqueioCartaoRepository, AvisoViagemRepository avisoViagemRepository, Tracer tracer) {
         this.biometriaRepository = biometriaRepository;
         this.cartaoIntegration = cartaoIntegration;
         this.bloqueioCartaoRepository = bloqueioCartaoRepository;
         this.avisoViagemRepository = avisoViagemRepository;
+        this.tracer = tracer;
     }
 
     @Value("${sistema.nome}")
@@ -53,7 +50,7 @@ public class CartaoController {
 
     @PostMapping("/{id}/biometrias")
     public ResponseEntity<?> associarBiometria(@PathVariable String id, @RequestBody @Valid BiometriaRequest request) {
-//        tracer.activeSpan();
+        tracer.activeSpan();
 
         try {
             CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe
@@ -73,7 +70,7 @@ public class CartaoController {
 
     @PostMapping("/{id}/bloqueios")
     public ResponseEntity<?> bloquearCartao(@PathVariable String id, @RequestHeader(value = "User-Agent") String userAgent, HttpServletRequest request) {
-//        tracer.activeSpan();
+        tracer.activeSpan();
 
         try {
             CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe
@@ -97,7 +94,7 @@ public class CartaoController {
 
     @PostMapping("/{id}/avisos")
     public ResponseEntity<?> avisoViagem(@PathVariable String id, @RequestHeader(value = "User-Agent") String userAgent, HttpServletRequest httpRequest, @RequestBody AvisoViagemRequest request) {
-//        tracer.activeSpan();
+        tracer.activeSpan();
 
         try {
             CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe
@@ -123,7 +120,7 @@ public class CartaoController {
 
     @PostMapping("/{id}/carteiras")
     public ResponseEntity<?> associarCarteira(@PathVariable String id, @RequestBody CarteiraRequest request) {
-//        tracer.activeSpan();
+        tracer.activeSpan();
 
         try {
             CartaoResponse cartao = cartaoIntegration.getCartao(id); // Somente valida se o cartão existe

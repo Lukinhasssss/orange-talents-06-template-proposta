@@ -23,22 +23,22 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'proposta:8080' ]
+      - targets: ['proposta:8080']
 
-      - job_name: 'contas'
-        metrics_path: '/actuator/prometheus'
-        scrape_interval: 5s
-        static_configs:
-          - targets: [ 'contas:8888' ]
+  - job_name: 'contas'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'contas:8888' ]
 
-      - job_name: 'analise'
-        metrics_path: '/actuator/prometheus'
-        scrape_interval: 5s
-        static_configs:
-          - targets: [ 'analise:9999' ]
+  - job_name: 'analise'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'analise:9999' ]
 
-      - job_name: 'transacoes'
-        metrics_path: '/actuator/prometheus'
-        scrape_interval: 5s
-        static_configs:
-          - targets: [ 'transacoes:7777' ]
+  - job_name: 'transacoes'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'transacoes:7777' ]

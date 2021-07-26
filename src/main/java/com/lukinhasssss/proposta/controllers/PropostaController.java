@@ -9,7 +9,7 @@ import com.lukinhasssss.proposta.entities.enums.StatusProposta;
 import com.lukinhasssss.proposta.integrations.SolicitacaoIntegration;
 import com.lukinhasssss.proposta.repositories.PropostaRepository;
 import feign.FeignException;
-//import io.opentracing.Tracer;
+import io.opentracing.Tracer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.encrypt.Encryptors;
@@ -29,20 +29,17 @@ public class PropostaController {
 
     private PropostaRepository propostaRepository;
     private SolicitacaoIntegration solicitacaoIntegration;
-//    private Tracer tracer;
+    private Tracer tracer;
 
-//    public PropostaController(Tracer tracer) {
-//        this.tracer = tracer;
-//    }
-
-    public PropostaController(PropostaRepository propostaRepository, SolicitacaoIntegration solicitacaoIntegration) {
+    public PropostaController(PropostaRepository propostaRepository, SolicitacaoIntegration solicitacaoIntegration, Tracer tracer) {
         this.propostaRepository = propostaRepository;
         this.solicitacaoIntegration = solicitacaoIntegration;
+        this.tracer = tracer;
     }
 
     @PostMapping
     public ResponseEntity<?> novaProposta(@RequestBody @Valid PropostaRequest request) {
-//        tracer.activeSpan();
+        tracer.activeSpan();
         String salt = KeyGenerators.string().generateKey();
         TextEncryptor encriptor = Encryptors.text("password", salt);
 
@@ -68,7 +65,7 @@ public class PropostaController {
 
     @GetMapping("/{idProposta}")
     public ResponseEntity<?> acompanharProposta(@PathVariable String idProposta) {
-//        tracer.activeSpan();
+        tracer.activeSpan();
 
         Optional<Proposta> proposta = propostaRepository.findById(idProposta);
 
